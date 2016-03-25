@@ -12,6 +12,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x
 
 // models
 app.set('Product', require('./models/Product.js')(mongoose));
+app.set('Category', require('./models/Category.js')(mongoose));
 
 // controllers
 var ProductController = require('./controllers/ProductController.js');
@@ -19,10 +20,15 @@ var CategoryController = require('./controllers/CategoryController.js');
 var ImageController = require('./controllers/ImageController.js');
 
 app.get('/category', CategoryController.find);
+app.get('/category/:id', CategoryController.findById);
+app.post('/category', CategoryController.create);
+app.delete('/category/:id', CategoryController.delete);
+
 app.get('/product', ProductController.find);
 app.get('/product/:id', ProductController.findById);
 app.post('/product', ProductController.create);
 app.delete('/product/:id', ProductController.delete);
+
 app.post('/image/upload', ImageController.upload);
 
 app.listen(config.port, function() {
