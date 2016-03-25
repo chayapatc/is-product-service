@@ -1,23 +1,74 @@
 // ProductController.js
 module.exports = {
-    find: function(req, res) {
-        var products = [{
-            id: 1,
-            code: '0001',
-            category_id: 1,
-            name: 'T-Shirt',
-            detail: `Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-					tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-					quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-					consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-					cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-					proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`,
-            cover_image: 'image.jpg',
-            price: 200,
-            created: new Date(),
-            modified: new Date()
-        }];
 
-        res.json(products);
+    find: function(req, res) {
+        var Product = req.app.get('Product');
+
+        var criteria = {};
+
+        if(req.query.category_id) {
+        	criteria.category_id = req.query.category_id;
+        }
+
+        Product.find(criteria).exec(function(err, products) {
+            if (err) {
+                return res.status(500).json(err);
+            }
+
+            res.json(products);
+        });
+    },
+
+    findById: function(req, res) {
+        var Product = req.app.get('Product');
+        var id = req.params.id;
+
+        if (!id) {
+            return res.status(500).json({
+                message: 'Product not found'
+            });
+        }
+
+        Product.findOne({ id: id }).exec(function(err, product) {
+            if (err) {
+                return res.status(500).json(err);
+            }
+
+            res.json(product);
+        });
+    },
+
+    create: function(req, res) {
+        var Product = req.app.get('Product');
+
+        Product.create(req.body, function(err, product) {
+            if (err) {
+                return res.status(500).json(err);
+            }
+
+            res.json(product);
+        })
+    },
+
+    delete: function(req, res) {
+        var Product = req.app.get('Product');
+        var id = req.params.id;
+
+        if (!id) {
+            return res.status(500).json({
+                message: 'Product not found'
+            });
+        }
+
+        Product.remove({ id: id }, function(err) {
+            if (err) {
+                return res.status(500).json(err);
+            }
+
+            res.json({
+                message: `Product id ${id} has been deleted.`
+            });
+        });
     }
+
 };
