@@ -24,13 +24,13 @@ app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 // models
-app.set('Product', require('./models/Product.js')(mongoose));
-app.set('Category', require('./models/Category.js')(mongoose));
+var Product = require('./models/Product.js')(mongoose);
+var Category = require('./models/Category.js')(mongoose);
 
 // controllers
-var ProductController = require('./controllers/ProductController.js');
-var CategoryController = require('./controllers/CategoryController.js');
-var ImageController = require('./controllers/ImageController.js');
+var ProductController = require('./controllers/ProductController.js')(Product);
+var CategoryController = require('./controllers/CategoryController.js')(Category);
+var ImageController = require('./controllers/ImageController.js')();
 
 app.get('/category', CategoryController.find);
 app.get('/category/:id', CategoryController.findById);
