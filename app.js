@@ -1,6 +1,19 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
+var multer = require('multer');
+
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  }
+})
+var upload = multer({ 
+	storage: storage
+});
 
 // config
 var config = require('./config.js');
@@ -29,7 +42,8 @@ app.get('/product/:id', ProductController.findById);
 app.post('/product', ProductController.create);
 app.delete('/product/:id', ProductController.delete);
 
-app.post('/image/upload', ImageController.upload);
+app.post('/image/upload', upload.single('image'), ImageController.upload);
+app.use('/image', express.static(__dirname + '/uploads'));
 
 app.listen(config.port, function() {
 	console.log(`app listening on port ${config.port}`);
