@@ -18,7 +18,7 @@ var upload = multer({
 // config
 var config = require('./config.js');
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/test');
+mongoose.connect(`mongodb://${config.database.host}/${config.database.name}`);
 
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
